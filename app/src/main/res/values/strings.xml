@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">QuizDroid</string>
+    <string name="btn_begin">Begin</string>
+    <string name="btn_submit">Submit</string>
+    <string name="answer_label">Answer</string>
+    <string name="btn_next">Next</string>
+    <string name="btn_finish">Finish</string>
+</resources>

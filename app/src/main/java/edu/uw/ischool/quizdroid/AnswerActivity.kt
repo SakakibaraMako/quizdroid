@@ -23,18 +23,23 @@ class AnswerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_answer)
 
+        val app = this.application as QuizApp
+
         correctAnswerLabel = findViewById(R.id.correctAnswer)
         yourAnswerLabel = findViewById(R.id.yourAnswer)
         correctTotalLabel = findViewById(R.id.correctTotal)
         btnNext = findViewById(R.id.btnNext)
         btnFinish = findViewById(R.id.btnFinish)
 
-        var correctAnswer = intent.getStringExtra("CORRECT_ANSWER")
-        var yourAnswer = intent.getStringExtra("YOUR_ANSWER")
-        var correctTotal = intent.getIntExtra("CORRECT_TOTAL", 0)
-        var total = intent.getIntExtra("TOTAL", 0)
-        var current = intent.getIntExtra("CURRENT", 0)
-        var topic = intent.getStringExtra("TOPIC")
+//        val topic = app.topic
+        val total = app.total
+        val correctAnswer = intent.getStringExtra("CORRECT_ANSWER")
+        val yourAnswer = intent.getStringExtra("YOUR_ANSWER")
+//        var correctTotal = intent.getIntExtra("CORRECT_TOTAL", 0)
+//        val current = intent.getIntExtra("CURRENT", 0)
+        var correctTotal = app.correct
+        var current = app.current
+
 
         if (correctAnswer == yourAnswer) correctTotal += 1
 
@@ -45,17 +50,19 @@ class AnswerActivity : AppCompatActivity() {
         // finish
         if (current == total) {
             btnFinish.setOnClickListener {
-                var intent = Intent(this, MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }
             btnFinish.visibility = View.VISIBLE
         } else { // next
             btnNext.setOnClickListener {
-                var intent = Intent(this, QuestionActivity::class.java)
-                intent.putExtra("TOPIC", topic)
-                intent.putExtra("CURRENT", current + 1)
-                intent.putExtra("CORRECT", correctTotal)
+                val intent = Intent(this, QuestionActivity::class.java)
+//                intent.putExtra("TOPIC", topic)
+                app.current += 1
+                app.correct = correctTotal
+//                intent.putExtra("CURRENT", current + 1)
+//                intent.putExtra("CORRECT", correctTotal)
                 startActivity(intent)
                 finish()
             }

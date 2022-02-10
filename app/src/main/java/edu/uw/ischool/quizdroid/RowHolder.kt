@@ -31,7 +31,7 @@ class RowHolder(row : View, activity: Activity) : RecyclerView.ViewHolder(row) {
         this.row.setOnClickListener {
             val intent = Intent(activity, TopicOverview::class.java)
             app.topic = title
-            app.total = app.getQuestions(title).size
+            app.total = app.getRepository().getQuestions(title)!!.size
             activity.startActivity(intent)
         }
     }

@@ -31,8 +31,8 @@ class TopicOverview : AppCompatActivity() {
         btnBegin = findViewById(R.id.btnBegin)
 
 
-        topicLabel.text = app.getTopic(topic).title
-        descriptionLabel.text = app.getTopic(topic).LongDescription
+        topicLabel.text = app.getRepository().getTopic(topic)!!.title
+        descriptionLabel.text = app.getRepository().getTopic(topic)!!.LongDescription
         if (numberOfQuestion > 1)
             numberLabel.text = String.format(numberOfQuestionTemplate, numberOfQuestion)
         else

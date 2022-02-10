@@ -75,7 +75,7 @@ class QuestionActivity : AppCompatActivity() {
         btnSubmit= findViewById(R.id.btnSubmit)
         radioGroup = findViewById(R.id.radio)
 
-        val quiz = app.getQuestions(topic)[currentQuestion - 1]
+        val quiz = app.getRepository().getQuestions(topic)!![currentQuestion - 1]
         val question = quiz.question
         val choices = quiz.choices
         val answer = choices[quiz.answer]

@@ -5,4 +5,8 @@
     <string name="answer_label">Answer</string>
     <string name="btn_next">Next</string>
     <string name="btn_finish">Finish</string>
+    <string name="preference">Preference</string>
+    <string name="btn_update">Update</string>
+    <string name="URL_label">URL:</string>
+    <string name="update_label">Update(Minutes):</string>
 </resources>

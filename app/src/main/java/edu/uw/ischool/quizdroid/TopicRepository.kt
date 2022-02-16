@@ -1,10 +1,11 @@
 package edu.uw.ischool.quizdroid
 
+import android.net.Uri
 import android.util.JsonReader
 import android.util.Log
+import androidx.core.net.toFile
 import java.io.FileNotFoundException
 import java.io.FileReader
-import java.net.URI
 
 interface TopicRepository {
     fun getTopics(): Array<Topic>?
@@ -12,20 +13,21 @@ interface TopicRepository {
     fun getQuestions(topic: String): Array<Quiz>?
 }
 
-class MemoryTopicRepository(private val uri: URI): TopicRepository {
+class MemoryTopicRepository(private val uri: Uri): TopicRepository {
 
-    val iconID = edu.uw.ischool.quizdroid.R.drawable.ic_launcher_foreground
-    val tag = "MemoryTopicRepository"
+    private val invalidJsonFileFound = "Invalid Local JSON File!"
+
+    private val iconID = edu.uw.ischool.quizdroid.R.drawable.ic_launcher_foreground
+    private val tag = "MemoryTopicRepository"
 
     override fun getTopics(): Array<Topic>? {
         var file : FileReader? = null
         try {
-            file = FileReader(uri.toString())
+            file = FileReader(uri.toFile())
         }catch (error: FileNotFoundException) {
             Log.i(tag, error.toString())
         }
-        if (file != null)
-            return readJson(JsonReader(file))
+        if (file != null) return readJson(JsonReader(file))
         else return null
     }
 
@@ -45,17 +47,21 @@ class MemoryTopicRepository(private val uri: URI): TopicRepository {
         else return null
     }
 
-    fun readJson(reader: JsonReader): Array<Topic> {
+    private fun readJson(reader: JsonReader): Array<Topic> {
         var topics = mutableListOf<Topic>()
-        reader.beginArray()
-        while (reader.hasNext()) {
-            topics.add(readMessage(reader))
+        try{
+            reader.beginArray()
+            while (reader.hasNext()) {
+                topics.add(readMessage(reader))
+            }
+            reader.endArray()
+        } catch (error: Exception) {
+            Log.i(tag, invalidJsonFileFound)
         }
-        reader.endArray()
         return topics.toTypedArray()
     }
 
-    fun readMessage(reader: JsonReader): Topic {
+    private fun readMessage(reader: JsonReader): Topic {
         var title = ""
         var description = ""
         var questions : Array<Quiz> = emptyArray()
@@ -74,7 +80,7 @@ class MemoryTopicRepository(private val uri: URI): TopicRepository {
         return Topic(title, description, description, questions, iconID)
     }
 
-    fun readQuestions(reader: JsonReader): Array<Quiz> {
+    private fun readQuestions(reader: JsonReader): Array<Quiz> {
         var questions = mutableListOf<Quiz>()
 
         reader.beginArray()
@@ -85,7 +91,7 @@ class MemoryTopicRepository(private val uri: URI): TopicRepository {
         return questions.toTypedArray()
     }
 
-    fun readQuestion(reader: JsonReader): Quiz {
+    private fun readQuestion(reader: JsonReader): Quiz {
         var question = ""
         var answer = 0
         var choices : Array<String> = emptyArray()
@@ -104,7 +110,7 @@ class MemoryTopicRepository(private val uri: URI): TopicRepository {
         return Quiz(question, choices, answer)
     }
 
-    fun readChoices(reader: JsonReader): Array<String> {
+    private fun readChoices(reader: JsonReader): Array<String> {
         var choices = mutableListOf<String>()
         reader.beginArray()
         while (reader.hasNext()) {

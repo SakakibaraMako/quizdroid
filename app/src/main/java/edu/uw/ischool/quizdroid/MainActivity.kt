@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -11,21 +12,20 @@ import androidx.recyclerview.widget.RecyclerView
 class MainActivity : AppCompatActivity() {
 
     var topics : Array<Topic>? = null
-//    private val numberOfQuestions = arrayListOf(3, 2, 1)
-//    private val descriptionTemplate = "This is a %s quiz. " +
-//            "It is intended to test your knowledge related to %s."
-//    private val numberOfQuestionTemplate = "There are %d questions."
 
-    lateinit var view : RecyclerView
+    private lateinit var view : RecyclerView
     lateinit var btnPreference : Button
+    lateinit var app : QuizApp
+
+    private val invalidJsonFound = "Invalid JSON File or No JSON Found! " +
+            "Please check updates and restart!"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val app = this.application as QuizApp
-
-//        Log.i("MainActivity", app.getRepository().getTopics().toString())
+        app = this.application as QuizApp
+        app.mainActivity = this
 
         topics = app.getRepository().getTopics()
 
@@ -37,11 +37,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (topics != null) {
-            var layoutManager = LinearLayoutManager(this)
+            val layoutManager = LinearLayoutManager(this)
             view.layoutManager = layoutManager
 
             val topicAdapter = TopicAdapter(this, topics!!, app)
             view.adapter = topicAdapter
+        } else {
+            Toast.makeText(this, invalidJsonFound, Toast.LENGTH_LONG).show()
         }
 //
 //        val dir = filesDir
@@ -56,5 +58,11 @@ class MainActivity : AppCompatActivity() {
 //            startActivity(intent)
 //        }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        app.unregisterReceivers()
+        app.cancelAlarm()
     }
 }

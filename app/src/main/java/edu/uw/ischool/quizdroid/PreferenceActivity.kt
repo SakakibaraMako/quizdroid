@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import java.net.URI
 
 class PreferenceActivity : AppCompatActivity() {
 
@@ -19,20 +18,20 @@ class PreferenceActivity : AppCompatActivity() {
 
         val app = application as QuizApp
 //        Log.i("Preference", URI.create(filesDir.parent).toString())
-        val prefs: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
-        val uri : URI = URI.create(prefs.getString(app.URIKey, app.defaultPath))
-        val updateInterval = prefs.getInt(app.intervalKey, app.defaultInterval)
+        val prefs: SharedPreferences = getSharedPreferences(app.PREFERENCE_NAME, MODE_PRIVATE)
+        val url = prefs.getString(app.URI_KEY, app.defaultURL)
+        val updateInterval = prefs.getInt(app.INTERVAL_KEY, app.defaultInterval)
 
         uriTextView = findViewById(R.id.URLTextEdit)
         updateTextView = findViewById(R.id.updateText)
         btnUpdate = findViewById(R.id.btnUpdate)
 
-        uriTextView.text = uri.toString()
+        uriTextView.text = url
         updateTextView.text = updateInterval.toString()
         btnUpdate.setOnClickListener {
             val editor = prefs.edit()
-            editor.putString(app.URIKey, uriTextView.text.toString())
-            editor.putInt(app.intervalKey, updateTextView.text.toString().toInt())
+            editor.putString(app.URI_KEY, uriTextView.text.toString())
+            editor.putInt(app.INTERVAL_KEY, updateTextView.text.toString().toInt())
             editor.commit()
         }
     }
